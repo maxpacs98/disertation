@@ -1,3 +1,3 @@
-from parser import parse_tests_file
+from processing import detect_smells
 
-parse_tests_file()
+detect_smells()
