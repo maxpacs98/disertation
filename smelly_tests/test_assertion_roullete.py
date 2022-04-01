@@ -1,7 +1,7 @@
 from smelly_tests.implementation_mock import increment, decrement
 
 
-def test_increment_suffers__from_assertion_roullete():
+def test_increment__suffers_from_assertion_roullete():
     assert increment(1) == 2, 'One added with one is two'
     assert increment(2) == 3
     assert increment(3) == 4

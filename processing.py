@@ -2,6 +2,7 @@ import smells
 from parser import traverse_tests_file
 
 # TODO: Move this maybe to a universal config
+# TODO: Add proper explanation messages
 SMELL_INFO_MAPPING = {
     'assertion_roulette': {
         'display_name': 'Assertion Roullete',
@@ -22,7 +23,17 @@ SMELL_INFO_MAPPING = {
         'display_name': 'Conditional Logic',
         'metric_threshold': 0,
         'explanation_message': 'Test has %d control flow statement(s)'
-    }
+    },
+    'exception_handling': {
+        'display_name': 'Exception handling',
+        'metric_threshold': 0,
+        'explanation_message': 'Test is passed or failed upon %d method(s) explicitly throwing an exception'
+    },
+    'sleepy_test': {
+        'display_name': 'Sleepy Test',
+        'metric_threshold': 0,
+        'explanation_message': 'Test has %d sleep methods'
+    },
 }
 
 

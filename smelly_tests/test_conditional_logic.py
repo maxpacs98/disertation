@@ -1,12 +1,12 @@
 from smelly_tests.implementation_mock import increment
 
 
-def test_increment_with_for_suffers__from_conditional_logic():
+def test_increment_with_for__suffers_from_conditional_logic():
     for i in range(10):
         assert increment(i) == i + 1
 
 
-def test_increment_with_if_suffers__from_conditional_logic():
+def test_increment_with_if__suffers_from_conditional_logic():
     external_condition = True
     if external_condition:
         assert increment(1) == 2

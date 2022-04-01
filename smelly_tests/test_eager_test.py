@@ -1,12 +1,12 @@
 from smelly_tests.implementation_mock import increment, decrement
 
 
-def test_increment_and_decrement_suffers__from_eager_test():
+def test_increment_and_decrement__suffers_from_eager_test():
     assert increment(1) == 2, 'One added with one is two'
     assert decrement(1) == 0, 'One subtracted with one is 0'
 
 
-def test_increment_and_decrement_with_variables_suffers__from_eager_test():
+def test_increment_and_decrement_with_variables__suffers_from_eager_test():
     incremented_value = increment(1)
     assert incremented_value == 2, 'One added with one is two'
     decremented_value = decrement(1)
