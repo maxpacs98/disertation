@@ -1,5 +1,6 @@
 from constants import CONTROL_STATEMENTS
-from utils import is_assertion, get_assertion_method, starts_try_block, get_try_except_block, is_sleep
+from utils import is_assertion, get_assertion_method, starts_try_block, get_try_except_block, is_sleep, is_annotation, \
+    is_print, contains_numeric_literals
 
 
 def check_assertion_roulette(current_test_lines):
@@ -50,3 +51,34 @@ def check_sleepy_test(current_test_lines):
         if is_sleep(line):
             sleep_lines.append(line)
     return sleep_lines
+
+
+def check_redundant_print(current_test_lines):
+    print_lines = []
+    for line in current_test_lines:
+        if is_print(line):
+            print_lines.append(line)
+    return print_lines
+
+
+def check_ignored_test(current_test_lines_with_annotations):
+    for line in current_test_lines_with_annotations:
+        if is_annotation(line, '@pytest.mark.skip'):
+            return [line]
+    return []
+
+
+def check_unknown_test(current_test_lines):
+    assert_lines = []
+    for line in current_test_lines:
+        if is_assertion(line):
+            assert_lines.append(line)
+    return assert_lines
+
+
+def check_magic_number(current_test_lines):
+    assert_with_magic_numbers_lines = []
+    for line in current_test_lines:
+        if is_assertion(line) and contains_numeric_literals(line):
+            assert_with_magic_numbers_lines.append(line)
+    return assert_with_magic_numbers_lines

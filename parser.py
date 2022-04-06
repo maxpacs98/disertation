@@ -1,6 +1,8 @@
 import os
 import re
 
+from utils import is_annotation
+
 
 def traverse_tests_directories(root_path):
     for dir_path, _, files in os.walk(root_path):
@@ -13,18 +15,24 @@ def traverse_tests_directories(root_path):
                     yield file_path, test_file.readlines()
 
 
-def traverse_tests_file():
-    for file_path, lines in traverse_tests_directories('smelly_tests'):
-        current_test_name, current_test_lines = None, []
+def traverse_tests_file(with_annotations=False):
+    for file_path, lines in traverse_tests_directories('debug_tests'):
+        current_test_name, current_test_lines, current_test_annotations = None, [], []
         for line_number, line in enumerate(lines):
             line = line.strip('\n')
             if line.startswith('def test_'):
                 current_test_name = re.search('def (.*)\\(', line).group(1)
+            elif with_annotations and is_annotation(line, '@pytest'):
+                current_test_annotations.append(line.strip())
             if current_test_name:
                 if '    ' in line or line.startswith('def test_'):
                     current_test_lines.append(line.strip())
                     if line_number == len(lines) - 1:  # eof
-                        yield current_test_name, current_test_lines
+                        test_lines = current_test_lines if not with_annotations else [*current_test_annotations,
+                                                                                      *current_test_lines]
+                        yield current_test_name, test_lines
                 else:
-                    yield current_test_name, current_test_lines
-                    current_test_name, current_test_lines = None, []
+                    test_lines = current_test_lines if not with_annotations else [*current_test_annotations,
+                                                                                  *current_test_lines]
+                    yield current_test_name, test_lines
+                    current_test_name, current_test_lines, current_test_annotations = None, [], []

@@ -6,6 +6,14 @@ def is_sleep(line):
     return line.startswith('sleep')
 
 
+def is_print(line):
+    return line.startswith('print')
+
+
+def is_annotation(line, annotation_name):
+    return line.startswith(annotation_name)
+
+
 def starts_try_block(line):
     return 'try:' in line
 
@@ -31,3 +39,16 @@ def get_try_except_block(index_of_try_line, all_lines):
         if starts_except_block(line):
             break
     return try_except_block_content
+
+
+def contains_numeric_literals(assert_line):
+    assertion_elements = assert_line.split('==')
+    for el in assertion_elements:
+        el = el.strip()
+        try:
+            int(el)
+            float(el)
+            return True
+        except ValueError:
+            pass
+    return False

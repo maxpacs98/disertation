@@ -13,4 +13,4 @@ def test_increment_integer__suffers_from_exception_handling():
 
 def test_increment_integer__healthy():
     with pytest.raises(Exception):
-        increment_integer(1.2)
+        assert increment_integer(1.2) == 2.2
