@@ -1,6 +1,7 @@
 import os
 import re
 
+from config import TESTS_DIRECTORY
 from utils import is_annotation
 
 
@@ -16,7 +17,7 @@ def traverse_tests_directories(root_path):
 
 
 def traverse_tests_file(with_annotations=False):
-    for file_path, lines in traverse_tests_directories('debug_tests'):
+    for file_path, lines in traverse_tests_directories(TESTS_DIRECTORY):
         current_test_name, current_test_lines, current_test_annotations = None, [], []
         for line_number, line in enumerate(lines):
             line = line.strip('\n')
@@ -32,7 +33,9 @@ def traverse_tests_file(with_annotations=False):
                                                                                       *current_test_lines]
                         yield current_test_name, test_lines
                 else:
-                    test_lines = current_test_lines if not with_annotations else [*current_test_annotations,
-                                                                                  *current_test_lines]
-                    yield current_test_name, test_lines
-                    current_test_name, current_test_lines, current_test_annotations = None, [], []
+                    next_two_lines_are_empty = not any([line, lines[line_number + 1].strip()])
+                    if next_two_lines_are_empty:
+                        test_lines = current_test_lines if not with_annotations else [*current_test_annotations,
+                                                                                      *current_test_lines]
+                        yield current_test_name, test_lines
+                        current_test_name, current_test_lines, current_test_annotations = None, [], []

@@ -1,3 +1,6 @@
+from constants import CAST_KEYWORDS
+
+
 def is_assertion(line):
     return line.startswith('assert')
 
@@ -23,13 +26,24 @@ def starts_except_block(line):
 
 
 def get_assertion_method(line, all_lines):
+    # TODO: refactor this maybe using recursion
     asserted_entity = line[line.find(' '):line.find('==')].strip()
     if '(' not in asserted_entity:  # variable tested
+        if '.' in asserted_entity:
+            asserted_entity = asserted_entity.split('.')[0]
         for line in all_lines:
             if line.startswith(f'{asserted_entity} ='):
-                return line[line.find(' ') + 2:line.find('(')]
+                return line[line.find(' ') + 2:line.find('(')].strip()
     else:
-        return line[line.find(' '):line.find('(')]  # From first space after assert until the function call
+        first_call = line[line.find(' '):line.find('(')]  # From first space after assert until the function call
+        if first_call in CAST_KEYWORDS:
+            if '(' not in asserted_entity:  # cast variable tested
+                if '.' in asserted_entity:
+                    asserted_entity = asserted_entity.split('.')[0]
+                for line in all_lines:
+                    if line.startswith(f'{asserted_entity} ='):
+                        return line[line.find(' ') + 2:line.find('(')].strip()
+            return line[line.find('('):line.rfind(')')]  # cast method tested
 
 
 def get_try_except_block(index_of_try_line, all_lines):

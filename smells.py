@@ -21,9 +21,10 @@ def check_duplicate_assert(current_test_lines):
 def check_eager_test(current_test_lines):
     distinct_assertion_methods = set()
     for line in current_test_lines:
-        assertion_method = get_assertion_method(line, current_test_lines)
         if is_assertion(line):
-            distinct_assertion_methods.add(assertion_method)
+            assertion_method = get_assertion_method(line, current_test_lines)
+            if assertion_method:
+                distinct_assertion_methods.add(assertion_method)
     return distinct_assertion_methods
 
 
@@ -40,8 +41,10 @@ def check_exception_handling(current_test_lines):
     try_except_blocks = list()
     for idx, line in enumerate(current_test_lines):
         if starts_try_block(line):
-            try_except_block = get_try_except_block(idx, current_test_lines)
-            try_except_blocks = [*try_except_blocks, *try_except_block]
+            try_except_blocks.append(line)
+            # TODO: Add these back if there is a separation of metric count from display lines
+            # try_except_block = get_try_except_block(idx, current_test_lines)
+            # try_except_blocks = [*try_except_blocks, *try_except_block]
     return try_except_blocks
 
 
@@ -63,7 +66,7 @@ def check_redundant_print(current_test_lines):
 
 def check_ignored_test(current_test_lines_with_annotations):
     for line in current_test_lines_with_annotations:
-        if is_annotation(line, '@pytest.mark.skip'):
+        if is_annotation(line, '@pytest.mark.skip('):
             return [line]
     return []
 
@@ -71,7 +74,7 @@ def check_ignored_test(current_test_lines_with_annotations):
 def check_unknown_test(current_test_lines):
     assert_lines = []
     for line in current_test_lines:
-        if is_assertion(line):
+        if is_assertion(line) or is_annotation(line, 'with pytest.raises') or is_annotation(line, 'pytest.raises'):
             assert_lines.append(line)
     return assert_lines
 
