@@ -1,7 +1,6 @@
 import os
 import re
 
-from pytest_smell.config import TESTS_DIRECTORY
 from pytest_smell.utils import is_annotation
 
 
@@ -16,8 +15,8 @@ def traverse_tests_directories(root_path):
                     yield file_path, test_file.readlines()
 
 
-def traverse_tests_file(with_annotations=False):
-    for file_path, lines in traverse_tests_directories(TESTS_DIRECTORY):
+def traverse_tests_file(tests_directory, with_annotations=False):
+    for file_path, lines in traverse_tests_directories(tests_directory):
         current_test_name, current_test_lines, current_test_annotations = None, [], []
         for line_number, line in enumerate(lines):
             line = line.strip('\n')

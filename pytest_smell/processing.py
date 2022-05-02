@@ -2,7 +2,7 @@ import csv
 import inspect
 
 import pytest_smell.smells as smells
-from pytest_smell.config import TESTS_DIRECTORY, SMELL_INFO_MAPPING, OUTPUT
+from pytest_smell.config import SMELL_INFO_MAPPING
 from .parser import traverse_tests_file
 
 
@@ -35,7 +35,7 @@ def write_results_to_file(file_path, all_test_smells):
         writer.writerows(all_test_smells)
 
 
-def detect_smells():
+def detect_smells(tests_directory, out_path=None, verbose=True, ci=False):
     count_metrics_names = ['total_test_count',
                            *[f'{smell_name}_count' for smell_name in SMELL_INFO_MAPPING.keys()]]
     count_metrics_mapping = {metric_name: 0 for metric_name in count_metrics_names}
@@ -43,7 +43,7 @@ def detect_smells():
     for smell_code, smell_info in SMELL_INFO_MAPPING.items():
         is_smelly = False
         for f_path, current_test_name, current_test_lines, line_number in \
-                traverse_tests_file(smell_info.get('check_annotations')):
+                traverse_tests_file(tests_directory, smell_info.get('check_annotations')):
             count_metrics_mapping['total_test_count'] += 1
             smell_handler = getattr(smells, f'check_{smell_code}')
             handler_result = smell_handler(current_test_lines)
@@ -59,14 +59,19 @@ def detect_smells():
                 all_test_smells.append(test_smell_mapping)
                 is_smelly = True
                 test_smell_message = f'Test {current_test_name} located at ' \
-                                     f'{get_printable_link(f"{TESTS_DIRECTORY}/{test_suite_name}", line=line_number)} '\
+                                     f'{get_printable_link(f"{tests_directory}/{test_suite_name}", line=line_number)} '\
                                      f'suffers from "{smell_info["display_name"]}". \n' \
                                      f'Explanation: {smell_info["explanation_message"] % len(handler_result)}'
-                print(test_smell_message)
-                if handler_result:
+                if verbose and not out_path and not ci:
+                    print(test_smell_message)
+                if handler_result and verbose and not out_path and not ci:
                     print("\n".join(handler_result))
-        if is_smelly:
+        if is_smelly and verbose and not out_path and not ci:
             print('\n')
 
-    output_final_results(count_metrics_mapping)
-    write_results_to_file(f'{OUTPUT}/smells.csv', all_test_smells)
+    if not out_path and not ci:
+        output_final_results(count_metrics_mapping)
+    if out_path and not ci:
+        write_results_to_file(f'{out_path}/smells.csv', all_test_smells)
+
+    return all_test_smells

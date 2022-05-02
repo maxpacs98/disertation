@@ -1,6 +1,3 @@
-TESTS_DIRECTORY = '/Users/alex/Desktop/dizertatie/implementation/disertation/smelly_tests'
-OUTPUT = '/Users/alex/Desktop/dizertatie/implementation/disertation/data'
-
 # TODO: Move this maybe to a universal config
 # TODO: Add proper explanation messages
 SMELL_INFO_MAPPING = {
