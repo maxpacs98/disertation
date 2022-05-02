@@ -1,4 +1,4 @@
-from constants import CAST_KEYWORDS
+from pytest_smell.constants import CAST_KEYWORDS
 
 
 def is_assertion(line):

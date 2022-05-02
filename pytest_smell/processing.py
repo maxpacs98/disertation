@@ -1,8 +1,8 @@
 import csv
 
-import smells
-from config import TESTS_DIRECTORY, SMELL_INFO_MAPPING
-from parser import traverse_tests_file
+import pytest_smell.smells as smells
+from pytest_smell.config import TESTS_DIRECTORY, SMELL_INFO_MAPPING, OUTPUT
+from .parser import traverse_tests_file
 
 
 def output_final_results(count_metrics_mapping):
@@ -53,4 +53,4 @@ def detect_smells():
             print('\n')
 
     output_final_results(count_metrics_mapping)
-    write_results_to_file(f'data/{TESTS_DIRECTORY}.csv', all_test_smells)
+    write_results_to_file(f'{OUTPUT}/smells.csv', all_test_smells)

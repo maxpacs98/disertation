@@ -1,8 +1,8 @@
 import os
 import re
 
-from config import TESTS_DIRECTORY
-from utils import is_annotation
+from pytest_smell.config import TESTS_DIRECTORY
+from pytest_smell.utils import is_annotation
 
 
 def traverse_tests_directories(root_path):

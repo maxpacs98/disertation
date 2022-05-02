@@ -1,5 +1,5 @@
-from constants import CONTROL_STATEMENTS
-from utils import is_assertion, get_assertion_method, starts_try_block, get_try_except_block, is_sleep, is_annotation, \
+from pytest_smell.constants import CONTROL_STATEMENTS
+from pytest_smell.utils import is_assertion, get_assertion_method, starts_try_block, is_sleep, is_annotation, \
     is_print, contains_numeric_literals
 
 
