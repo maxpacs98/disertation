@@ -1,8 +1,20 @@
 import csv
+import inspect
 
 import pytest_smell.smells as smells
 from pytest_smell.config import TESTS_DIRECTORY, SMELL_INFO_MAPPING, OUTPUT
 from .parser import traverse_tests_file
+
+
+def get_printable_link(file=None, line=None):
+    """ Print a link in PyCharm to a line in file.
+        Defaults to line where this function was called. """
+    if file is None:
+        file = inspect.stack()[1].filename
+    if line is None:
+        line = inspect.stack()[1].lineno
+    string = f'File "{file}", line {max(line, 1)}'.replace("\\", "/")
+    return string
 
 
 def output_final_results(count_metrics_mapping):
@@ -30,7 +42,8 @@ def detect_smells():
     all_test_smells = []
     for smell_code, smell_info in SMELL_INFO_MAPPING.items():
         is_smelly = False
-        for f_path, current_test_name, current_test_lines in traverse_tests_file(smell_info.get('check_annotations')):
+        for f_path, current_test_name, current_test_lines, line_number in \
+                traverse_tests_file(smell_info.get('check_annotations')):
             count_metrics_mapping['total_test_count'] += 1
             smell_handler = getattr(smells, f'check_{smell_code}')
             handler_result = smell_handler(current_test_lines)
@@ -40,11 +53,14 @@ def detect_smells():
                 suffers_of_smell = len(handler_result) < smell_info['metric_threshold']
             if suffers_of_smell:
                 count_metrics_mapping[f'{smell_code}_count'] += 1
-                test_smell_mapping = {'test_suite': f_path.split('/')[1], 'test_name': current_test_name,
+                test_suite_name = f_path.split('/')[-1]
+                test_smell_mapping = {'test_suite': test_suite_name, 'test_name': current_test_name,
                                       'smell': smell_info['display_name'], 'metric_value': len(handler_result)}
                 all_test_smells.append(test_smell_mapping)
                 is_smelly = True
-                test_smell_message = f'Test {current_test_name} suffers from "{smell_info["display_name"]}". ' \
+                test_smell_message = f'Test {current_test_name} located at ' \
+                                     f'{get_printable_link(f"{TESTS_DIRECTORY}/{test_suite_name}", line=line_number)} '\
+                                     f'suffers from "{smell_info["display_name"]}". \n' \
                                      f'Explanation: {smell_info["explanation_message"] % len(handler_result)}'
                 print(test_smell_message)
                 if handler_result:

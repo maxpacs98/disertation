@@ -15,7 +15,7 @@ setup(
     long_description=README,
     long_description_content_type="text/markdown",
     url="https://github.com/maxpacs98/disertation",
-    author="Bodea Alxandru",
+    author="Bodea Alex",
     author_email="alexandrubodeag@gmail.com",
     license="MIT",
     classifiers=[
