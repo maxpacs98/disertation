@@ -66,15 +66,18 @@ def check_redundant_print(current_test_lines):
 
 def check_ignored_test(current_test_lines_with_annotations):
     for line in current_test_lines_with_annotations:
-        if is_annotation(line, '@pytest.mark.skip('):
+        if is_annotation(line, '@pytest.mark.skip(') or is_annotation(line, '@skip'):
             return [line]
     return []
 
 
-def check_unknown_test(current_test_lines):
+def check_unknown_test(current_test_lines_with_annotations):
     assert_lines = []
-    for line in current_test_lines:
-        if is_assertion(line) or is_annotation(line, 'with pytest.raises') or is_annotation(line, 'pytest.raises'):
+    for line in current_test_lines_with_annotations:
+        if is_annotation(line, '@pytest.fixture'):  # means it is a test fixture not a test
+            return ['dummy_assert']  # TODO: Improve this
+        if is_assertion(line) or is_annotation(line, 'with pytest') or is_annotation(line, 'pytest') or \
+                is_annotation(line, 'with warnings'):
             assert_lines.append(line)
     return assert_lines
 

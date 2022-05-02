@@ -2,11 +2,11 @@ from constants import CAST_KEYWORDS
 
 
 def is_assertion(line):
-    return line.startswith('assert')
+    return 'assert' in line
 
 
 def is_sleep(line):
-    return line.startswith('sleep')
+    return line.startswith('sleep') or line.startswith('await asyncio.sleep')
 
 
 def is_print(line):

@@ -11,7 +11,7 @@ def traverse_tests_directories(root_path):
             continue
         for filename in files:
             file_path = os.path.join(dir_path, filename)
-            if filename.startswith('test') or filename.endswith('test.py'):
+            if (filename.startswith('test') and filename.endswith('.py')) or filename.endswith('test.py'):
                 with open(file_path) as test_file:
                     yield file_path, test_file.readlines()
 
@@ -31,11 +31,11 @@ def traverse_tests_file(with_annotations=False):
                     if line_number == len(lines) - 1:  # eof
                         test_lines = current_test_lines if not with_annotations else [*current_test_annotations,
                                                                                       *current_test_lines]
-                        yield current_test_name, test_lines
+                        yield file_path, current_test_name, test_lines
                 else:
                     next_two_lines_are_empty = not any([line, lines[line_number + 1].strip()])
                     if next_two_lines_are_empty:
                         test_lines = current_test_lines if not with_annotations else [*current_test_annotations,
                                                                                       *current_test_lines]
-                        yield current_test_name, test_lines
+                        yield file_path, current_test_name, test_lines
                         current_test_name, current_test_lines, current_test_annotations = None, [], []
