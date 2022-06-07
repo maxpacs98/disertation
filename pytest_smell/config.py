@@ -1,13 +1,6 @@
 # TODO: Move this maybe to a universal config
 # TODO: Add proper explanation messages
 SMELL_INFO_MAPPING = {
-    'assertion_roulette': {
-        'display_name': 'Assertion Roullete',
-        'metric_threshold': 1,
-        'reversed_metric': False,
-        'explanation_message': 'Test has %d undocumented asserts:',
-        'check_annotations': False
-    },
     'duplicate_assert': {
         'display_name': 'Duplicate Assert',
         'metric_threshold': 0,
@@ -69,6 +62,13 @@ SMELL_INFO_MAPPING = {
         'metric_threshold': 0,
         'reversed_metric': False,
         'explanation_message': 'Test has %d assertions which contain numeric literals',
+        'check_annotations': False
+    },
+    'assertion_roulette': {
+        'display_name': 'Assertion Roullete',
+        'metric_threshold': 1,
+        'reversed_metric': False,
+        'explanation_message': 'Test has %d additional undocumented asserts:',
         'check_annotations': False
     },
 }

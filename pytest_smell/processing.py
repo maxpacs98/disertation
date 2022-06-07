@@ -40,6 +40,8 @@ def detect_smells(tests_directory, out_path=None, verbose=True, ci=False):
                            *[f'{smell_name}_count' for smell_name in SMELL_INFO_MAPPING.keys()]]
     count_metrics_mapping = {metric_name: 0 for metric_name in count_metrics_names}
     all_test_smells = []
+    file_count = 0
+    suites = set()
     for smell_code, smell_info in SMELL_INFO_MAPPING.items():
         is_smelly = False
         for f_path, current_test_name, current_test_lines, line_number in \
@@ -47,6 +49,10 @@ def detect_smells(tests_directory, out_path=None, verbose=True, ci=False):
             count_metrics_mapping['total_test_count'] += 1
             smell_handler = getattr(smells, f'check_{smell_code}')
             handler_result = smell_handler(current_test_lines)
+            if f_path not in suites:
+                suites.add(f_path)
+                file_count += 1
+                print(file_count)
             if not smell_info.get('reversed_metric'):
                 suffers_of_smell = len(handler_result) > smell_info['metric_threshold']
             else:
@@ -66,10 +72,11 @@ def detect_smells(tests_directory, out_path=None, verbose=True, ci=False):
                     print(test_smell_message)
                 if handler_result and verbose and not out_path and not ci:
                     print("\n".join(handler_result))
+                    print('\n')
         if is_smelly and verbose and not out_path and not ci:
             print('\n')
 
-    if not out_path and not ci:
+    if not verbose and not out_path and not ci:
         output_final_results(count_metrics_mapping)
     if out_path and not ci:
         write_results_to_file(f'{out_path}/smells.csv', all_test_smells)

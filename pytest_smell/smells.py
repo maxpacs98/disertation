@@ -66,7 +66,7 @@ def check_redundant_print(current_test_lines):
 
 def check_ignored_test(current_test_lines_with_annotations):
     for line in current_test_lines_with_annotations:
-        if is_annotation(line, '@pytest.mark.skip(') or is_annotation(line, '@skip'):
+        if is_annotation(line, '@pytest.mark.skip(') or is_annotation(line, '@skip_') or is_annotation(line, '@skipif'):
             return [line]
     return []
 
