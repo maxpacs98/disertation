@@ -30,11 +30,11 @@ def traverse_tests_file(tests_directory, with_annotations=False):
                     if line_number == len(lines) - 1:  # eof
                         test_lines = current_test_lines if not with_annotations else [*current_test_annotations,
                                                                                       *current_test_lines]
-                        yield file_path, current_test_name, test_lines, line_number
+                        yield file_path, current_test_name, test_lines, line_number - len(current_test_lines)
                 else:
                     next_two_lines_are_empty = not any([line, lines[line_number + 1].strip()])
                     if next_two_lines_are_empty:
                         test_lines = current_test_lines if not with_annotations else [*current_test_annotations,
                                                                                       *current_test_lines]
-                        yield file_path, current_test_name, test_lines, line_number
+                        yield file_path, current_test_name, test_lines, line_number - len(current_test_lines)
                         current_test_name, current_test_lines, current_test_annotations = None, [], []

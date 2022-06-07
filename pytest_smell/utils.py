@@ -56,8 +56,8 @@ def get_try_except_block(index_of_try_line, all_lines):
 
 
 def contains_numeric_literals(assert_line):
-    assertion_elements = assert_line.split('==')
-    for el in assertion_elements:
+    # assertion_elements = assert_line.split('==')
+    for el in assert_line:
         el = el.strip()
         try:
             int(el)
